@@ -55,7 +55,7 @@ router.push(`/viewProfiles/${newUserInfo.id}`)
 <section class = "first">
 <div class="container flex">
 <form @submit.prevent = "addUser">
-            <h2>Create New User</h2>
+            <h2> Create New User</h2>
 
             <div>
               <label class="labels"
