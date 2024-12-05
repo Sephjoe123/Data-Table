@@ -36,8 +36,6 @@ emit('update-active-checkbox-id',id)
 }
 
 
-
-
 const openProfile = (userId) => {
   activeProfileId.value = userId;
 
@@ -50,7 +48,7 @@ const closeProfile = () => {
 let dropdownStates = ref({});
 
 const toggleDetails = (userId, userStatus) => {
-  if (userStatus === 'overdue' || userStatus === 'unpaid') {
+  if (userStatus === 'overdue' || userStatus === 'unpaid' ||  userStatus === 'paid') {
     expandedUserId.value = expandedUserId.value === userId ? null : userId;
     dropdownStates.value[userId] = !dropdownStates.value[userId];
   } else {
@@ -127,7 +125,8 @@ const toggleDetails = (userId, userStatus) => {
     </tr>
 
     <tr v-if="expandedUserId === user.id && user.status === 'overdue' || 
-    expandedUserId === user.id && user.status === 'unpaid' ">
+     expandedUserId === user.id && user.status === 'unpaid' || 
+     expandedUserId === user.id && user.status === 'paid' ">
       <td colspan="10">
         <OverdueDetails :overdueDetails="user.overdueDetails" />
       </td>

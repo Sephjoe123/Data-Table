@@ -5,7 +5,6 @@ import "vue-toast-notification/dist/theme-sugar.css";
 
 
 export const useUserStore = defineStore("userStore", {
-  
   state: () => ({
     users: [
       {
@@ -264,10 +263,7 @@ export const useUserStore = defineStore("userStore", {
         selected: false,
       },
     ],
-    
   }),
-
- 
 
   getters: {
     totalPayableAmount(state) {
@@ -277,27 +273,45 @@ export const useUserStore = defineStore("userStore", {
     },
   },
 
- 
-
   actions: {
     markItemsAsPaid(userId) {
       this.users.forEach((user) => {
-        if (user.selected = true && user.id === userId && user.status === "unpaid") {
+        if (
+          (user.selected =
+            true && user.id === userId && user.status === "unpaid" )
+        ) {
           user.status = "paid";
-            const toast = useToast();
-            toast.success("User is now debt free!");
+          const toast = useToast();
+          toast.success("User is now debt free!");
         }
       });
     },
 
-    activateUser(userId){
-    this.users.forEach((user) =>{
-      if(user.id === userId && user.userStatus === "inactive"){
-        user.userStatus = "active"
-        const toast = useToast();
-        toast.success("User Is Now Active !");
-      }
-    })
-    }
+    activateUser(userId) {
+      this.users.forEach((user) => {
+        if (user.id === userId && user.userStatus === "inactive") {
+          user.userStatus = "active";
+          const toast = useToast();
+          toast.success("User Is Now Active !");
+        }
+        else if(user.id === userId && user.userStatus === "active"){
+          const toast = useToast();
+           toast.error("User Is Already Active !");
+        }
+      });
+    },
+    deActivateUser(userId) {
+      this.users.forEach((user) => {
+        if (user.id === userId && user.userStatus === "active") {
+          user.userStatus = "inactive";
+          const toast = useToast();
+          toast.success("User Is Now Deactivated !");
+        } else if (user.id === userId && user.userStatus === "inactive") {
+          const toast = useToast();
+          toast.error("User Is Already Deactivated !");
+        }
+      });
+    },
+
   },
 });

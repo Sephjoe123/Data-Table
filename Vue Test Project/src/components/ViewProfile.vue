@@ -17,6 +17,7 @@ const { viewId } = defineProps({
 const storeData = useUserStore().users
 
 const activateUser =  useUserStore().activateUser
+const deactivateUser = useUserStore().deActivateUser
 
 let index = storeData.findIndex(item => item.id === viewId)
 
@@ -44,7 +45,7 @@ toast.success('User Removed Successfully');
     <ul>
         <RouterLink :to = "'/editUser/' + viewId">
           <li>
-         Edit  
+         Edit User
         </li>
         </RouterLink>
         
@@ -58,9 +59,12 @@ toast.success('User Removed Successfully');
         <li @click = "activateUser(viewId)" v-bind:style="{'color': '#007F00','padding-bottom': '0.5rem'}">
          Activate User
         </li>
+        <li @click = "deactivateUser(viewId)" v-bind:style="{'color': '#6E6893;','padding-bottom': '0.5rem'}">
+         Deactivate User
+        </li>
         <hr>
         <li @click = "deleteUser" v-bind:style="{'color': '#D30000'}">
-          Delete
+          Delete User
         </li>
     </ul>
 </div>

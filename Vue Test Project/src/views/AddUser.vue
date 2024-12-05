@@ -1,21 +1,19 @@
 <script setup>
-import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { onMounted, reactive } from 'vue';
 import router from '@/router';
 import {useToast} from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import {onMounted, reactive, ref } from 'vue';
 
-const route = useRoute()
-const userId = +route.params.id
-const mainId = userId - 1;
+
 const storeData = useUserStore().users
 
-const editId = storeData[mainId]
+const userIds = ref([])
 
+onMounted(() =>{
+userIds.value = storeData.map(user => user.id) 
 
-let oldForm = reactive({
-})
+});
 
 const form = reactive({
 firstname: "",
@@ -26,22 +24,11 @@ paymentStatus: "",
 amount: "",
 })
 
-onMounted(() =>{
-let response = editId
-Object.assign(oldForm,response)
-form.firstname = oldForm.firstName 
-form.lastname = oldForm.lastName
-form.email = oldForm.email
-form.userStatus = oldForm.userStatus
-form.paymentStatus = oldForm.status
-form.amount = oldForm.amount
+const addUser = () =>{
+const newId = userIds.value.length ? Math.max(...userIds.value) + 1 : 1;
 
-
-})
-
-const updateUserInfo = () =>{
-const updateInfo = {
-id: userId,
+const newUserInfo = {
+id: newId,
 firstName: form.firstname,
 lastName: form.lastname,
 email: form.email,
@@ -49,12 +36,16 @@ userStatus: form.userStatus,
 status: form.paymentStatus,
 amount: form.amount,
 payDateStatus: form.payDateStatus,
-
+ lastLogin: "14/APR/2024",
+ payDateStatus: "15/APR/2024",
+ selected: false,
 }
-storeData[mainId] = updateInfo
-router.push(`/viewProfiles/${userId}`)
-const $toast = useToast();
- $toast.success('User Edited Successfully');
+storeData.push(newUserInfo)
+const toast = useToast()
+toast.success('User Created Successfully')
+router.push(`/viewProfiles/${newUserInfo.id}`)
+
+
 }
 
 </script>
@@ -63,8 +54,8 @@ const $toast = useToast();
 <template>
 <section class = "first">
 <div class="container flex">
-<form @submit.prevent="updateUserInfo">
-            <h2>Edit {{ editId.firstName }}'s Details</h2>
+<form @submit.prevent = "addUser">
+            <h2>Create New User</h2>
 
             <div>
               <label class="labels"
@@ -142,7 +133,7 @@ const $toast = useToast();
                 Amount
               </label>
               <input
-                v-model = "form.amount"
+                 v-model = "form.amount"
                 type="number"
                 id="location"
                 name="location"

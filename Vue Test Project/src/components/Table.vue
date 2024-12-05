@@ -5,7 +5,7 @@ import TableBody from './TableBody.vue';
 import PageSort from './PageSort.vue';
 import RadioBtn from './RadioBtn.vue';
 import SearchInput from './SearchInput.vue';
-
+import { RouterLink } from 'vue-router';
 
 const showDropdown = ref(false);
 const searchValue = ref('');
@@ -68,6 +68,12 @@ const sortByOptions = (sort) =>{
       </div>
       
       <SearchInput @search="searcByInput" />
+
+      <RouterLink to = "/addUser">
+      <div>
+        <button class = "addBtn" >ADD USER</button>
+      </div>
+      </RouterLink>
 
       <div>
         <button @click = "markAsPaid(activeCheckboxId)">PAY DUES</button>
@@ -136,7 +142,7 @@ h4 {
 }
 
 
-button {
+button, .addBtn {
   padding: 11px 13px;
   border-radius: 5px;
   background-color: #6D5BD0;
@@ -145,6 +151,10 @@ button {
   right: 35px;
   border: none;
   cursor: pointer;
+}
+.addBtn{
+  right: 690px;
+
 }
 
 button:hover{

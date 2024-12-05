@@ -5,6 +5,7 @@ import UnpaidView from "@/views/UnpaidView.vue";
 import OverdueView from '@/views/OverdueView.vue'
 import ViewProfiles from '@/views/ViewProfiles.vue';
 import EditUser from '@/views/EditUser.vue';
+import AddUser from '@/views/AddUser.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,7 +39,13 @@ const router = createRouter({
       path: '/editUser/:id',
       name: 'editUser',
       component: EditUser
-    }
+    },
+    {
+      path: '/addUser',
+      name: 'addUser',
+      component: AddUser
+    },
+
 
   ]
 })

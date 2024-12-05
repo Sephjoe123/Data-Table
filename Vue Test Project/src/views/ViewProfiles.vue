@@ -19,12 +19,12 @@ let user = users.find((item) => item.id === view)
      <p> <b> Hello {{user.firstName }} ! </b> </p>
      <h2> Here Are your profile Details :</h2>
      <br>
-      <p> <b>Fullname:</b> {{user.firstName}} {{user.lastName }}</p>
+      <p> <b>Fullname:  </b> {{user.firstName}} {{user.lastName }}</p>
      <p> <b>Email:</b> {{user.email }}</p>
      <p> <b>Payment Status:</b> {{ user.status }}</p>
      <p> <b>User Status:</b> {{ user.userStatus }}</p>
      <p><b>Payment Date:</b> {{user.payDateStatus }}</p>
-     <p> <b>Amount Paid:</b> {{ user.amount }}</p>
+     <p> <b>Amount Paid:</b> ${{ user.amount }}</p>
 
       <RouterLink  :to = "'/editUser/' + view">
       <button>
