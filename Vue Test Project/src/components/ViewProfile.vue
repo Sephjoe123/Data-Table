@@ -1,9 +1,39 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+
+defineEmits(['closeModal']);
+
+const { viewId } = defineProps({
+  viewId: {
+    type: Number,
+    required: true,
+  },
+});
+
+const storeData = useUserStore().users
+
+const activateUser =  useUserStore().activateUser
+
+let index = storeData.findIndex(item => item.id === viewId)
+
+const deleteUser = () => {
+storeData.splice(index,1)
+const toast = useToast()
+toast.success('User Removed Successfully');
+};
+
+
 
 </script>
 
+
 <template>
-<div class="manageProfile">
+
+<div  class="manageProfile" >
     
     <div class="cancel">
         <p v-bind:style="{'cursor': 'pointer'}" @click = "$emit('closeModal')">
@@ -12,17 +42,24 @@
        
     </div>
     <ul>
-        <li>
-        Edit  
+        <RouterLink :to = "'/editUser/' + viewId">
+          <li>
+         Edit  
         </li>
+        </RouterLink>
+        
+
+        <RouterLink :to = "'/viewProfiles/' + viewId">
         <li>
          View Profile
         </li>
-        <li v-bind:style="{'color': '#007F00','padding-bottom': '0.5rem'}">
+          </RouterLink>
+
+        <li @click = "activateUser(viewId)" v-bind:style="{'color': '#007F00','padding-bottom': '0.5rem'}">
          Activate User
         </li>
         <hr>
-        <li v-bind:style="{'color': '#D30000'}">
+        <li @click = "deleteUser" v-bind:style="{'color': '#D30000'}">
           Delete
         </li>
     </ul>

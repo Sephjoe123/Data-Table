@@ -1,6 +1,6 @@
 <script setup>
 import Table from '../components/Table.vue'
-import { useUserStore } from '@/stores/userStore';
+
 
 
 </script>

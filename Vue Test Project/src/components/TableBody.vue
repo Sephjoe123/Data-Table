@@ -3,83 +3,58 @@ import { useUserStore } from '@/stores/userStore';
 import ViewProfile from './ViewProfile.vue';
 import OverdueDetails from './OverdueDetails.vue';
 import { computed } from 'vue';
-
+import { getMatchedSearch,getMatchedStatus,getSortedUsers } from '@/helperFunctions/Utilitis';
 import { ref } from 'vue';
+
+const storeData = useUserStore();
+const emit = defineEmits(['update-active-checkbox-id']);
 
 const props = defineProps({
   status: String,
   searchValue: String,
   sortValue: String,
-  selectedUsers: Array
+  
 });
-
-const storeData = useUserStore();
-const activeProfileId = ref(null);
-const expandedUserId = ref(null);
-
-
 
 const filteredUsers = computed(() => {
-  
-  let users = storeData.users.filter(user => {
-    const matchesStatus =
-      props.status === 'all' || user.status === props.status;
-
-    const matchesSearch = props.searchValue
-      ? user.firstName.toLowerCase().includes(props.searchValue.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(props.searchValue.toLowerCase()) ||
-        user.email.toLowerCase().includes(props.searchValue.toLowerCase())
-      : true;
-
-    return matchesStatus && matchesSearch;
-  });
-
-  
-  if (props.sortValue) {
-    users = users.sort((a, b) => {
-      if(props.sortValue === 'firstname'){
-        return a.firstName.localeCompare(b.firstName);
-      }
-      else if(props.sortValue === 'lastname'){
-        return a.lastName.localeCompare(b.lastName)
-      }
-      else if(props.sortValue === 'dueDate'){
-         return new Date(a.dueDate) - new Date(b.dueDate);
-      }
-      else if(props.sortValue === 'lastLogin'){
-        return new Date(a.lastLogin) - new Date(b.lastLogin);
-      }
-      else if(props.sortValue === 'active'){
-        return  a.userStatus === "active" ? -1 : 1;
-      }
-      else if(props.sortValue === 'inactive'){
-        return  a.userStatus === "inactive" ? -1 : 1;
-      }
-      else{
-        return 0;
-      }
-      
-    });
-  }
-
+  let users = storeData.users;
+  users = getMatchedStatus(users, props.status);
+  users = getMatchedSearch(users, props.searchValue);
+  users = getSortedUsers(users, props.sortValue);
   return users;
+
 });
+
+const activeProfileId = ref(null);
+const activeCheckboxId = ref(null);
+const expandedUserId = ref(null);
+
+const getId = (id) =>{
+activeCheckboxId.value = id;
+emit('update-active-checkbox-id',id)
+
+}
+
 
 
 
 const openProfile = (userId) => {
-  activeProfileId.value = userId
-}
-const closeProfile = () =>{
-  activeProfileId.value = null
-}
+  activeProfileId.value = userId;
 
-const toggleDetails = (userId,userStatus) => {
-  if (userId && userStatus === 'overdue') {
+
+};
+const closeProfile = () => {
+  activeProfileId.value = null;
+};
+
+let dropdownStates = ref({});
+
+const toggleDetails = (userId, userStatus) => {
+  if (userStatus === 'overdue' || userStatus === 'unpaid') {
     expandedUserId.value = expandedUserId.value === userId ? null : userId;
+    dropdownStates.value[userId] = !dropdownStates.value[userId];
   } else {
     expandedUserId.value = null;
-    
   }
 };
 
@@ -87,19 +62,24 @@ const toggleDetails = (userId,userStatus) => {
 
 <template>
   <tbody v-for="user in filteredUsers" :key="user.id"> 
+   
     <tr>
       
-      <th>
+      <th @change = "getId(user.id)">
         <label for="checkbox">
          <input 
             type="checkbox"
+            v-model="user.selected"
+            
           />
+          
           <span class="custom-checkbox"></span>
         </label>
       </th>
 
       <th>
-        <font-awesome-icon @click = "toggleDetails(user.id,user.status)" :icon="['fas', 'circle-chevron-down']"  class="circle" />
+        <font-awesome-icon @click = "toggleDetails(user.id,user.status)" :icon = "dropdownStates[user.id] ? ['fas', 'circle-chevron-down'] 
+          : ['fas', 'circle-chevron-up']"  class="circle" />
       </th>
 
       <th class="name">
@@ -140,12 +120,14 @@ const toggleDetails = (userId,userStatus) => {
       </th>
        
       <div v-if="activeProfileId === user.id" class = "ViewProfile">
-        <ViewProfile @closeModal = "closeProfile"/>
+        <ViewProfile :viewId = "activeProfileId"  @closeModal = "closeProfile"/>
       </div>
+   
     
     </tr>
 
-    <tr v-if="expandedUserId === user.id && user.status === 'overdue'">
+    <tr v-if="expandedUserId === user.id && user.status === 'overdue' || 
+    expandedUserId === user.id && user.status === 'unpaid' ">
       <td colspan="10">
         <OverdueDetails :overdueDetails="user.overdueDetails" />
       </td>
@@ -158,7 +140,7 @@ const toggleDetails = (userId,userStatus) => {
 <style scoped>
 table {
   width: 100%;
-  border-collapse: collapse; 
+
   margin-top: 1rem;
 }
 

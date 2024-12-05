@@ -1,49 +1,50 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useUserStore } from '@/stores/userStore';
 import TableBody from './TableBody.vue';
 import PageSort from './PageSort.vue';
 import RadioBtn from './RadioBtn.vue';
 import SearchInput from './SearchInput.vue';
 
+
 const showDropdown = ref(false);
 const searchValue = ref('');
 const sortValue = ref("")
+const activeCheckboxId = ref(null)
+const markAsPaid = useUserStore().markItemsAsPaid
+
+
+const props = defineProps({
+  status: String,
+});
+
 
 const openDropdown = () => {
   showDropdown.value = true;
+  
+};
+const updateActiveCheckboxId = (id) => {
+  activeCheckboxId.value = id;
+  
+  
 };
 
 
-
-const handleClickOutside = (event) => {
-  const dropdown = document.querySelector('.dropdown');
+ const handleClickOutside = (event) => {
+  const dropdown = document.querySelector(".dropdown");
   if (dropdown && !dropdown.contains(event.target)) {
     showDropdown.value = false;
   }
 };
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener("click", handleClickOutside);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener("click", handleClickOutside);
 });
 
-
-
-const props = defineProps({
-  status: {
-    type: String,
-    required: true,
-  },
-  searchValue: {
-    type: String,
-  },
-  sortValue: {
-    type: String,
-  }
-});
 
 const searcByInput = (search) => {
   searchValue.value = search;
@@ -69,7 +70,7 @@ const sortByOptions = (sort) =>{
       <SearchInput @search="searcByInput" />
 
       <div>
-        <button @click="markSelectedAsPaid">PAY DUES</button>
+        <button @click = "markAsPaid(activeCheckboxId)">PAY DUES</button>
       </div>
     </div>
 
@@ -92,7 +93,13 @@ const sortByOptions = (sort) =>{
           </th>
         </tr>
       </thead>
-      <TableBody :status="status" :searchValue="searchValue" :sortValue = "sortValue"  v-model:selectedUsers="selectedUsers"/>
+
+        <TableBody
+        :status="status"
+        :searchValue="searchValue"
+        :sortValue="sortValue"
+        @update-active-checkbox-id="updateActiveCheckboxId"
+      />
     </table>
     
     <PageSort />

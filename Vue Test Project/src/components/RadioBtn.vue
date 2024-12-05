@@ -6,7 +6,6 @@ const sortUsers = (e) =>{
   emit('sort', e.target.value)
 }
 
-
 </script>
 
 <template>
@@ -36,16 +35,24 @@ const sortUsers = (e) =>{
 
     <h6 class="radio-2">USERS:</h6>
     <label>
-      All
-      <input type="radio" name="userStatus" value="all"  @change="sortUsers" />
-    </label>
-    <label>
       Active
       <input type="radio" name="userStatus" value="active"  @change="sortUsers" />
     </label>
     <label>
       Inactive
       <input type="radio" name="userStatus" value="inactive"  @change="sortUsers" />
+    </label>
+    <label>
+      Paid
+      <input type="radio" name="userStatus" value="paid"  @change="sortUsers" />
+    </label>
+    <label>
+      Unpaid
+      <input type="radio" name="userStatus" value="unpaid"  @change="sortUsers" />
+    </label>
+    <label>
+      Overdue
+      <input type="radio" name="userStatus" value="overdue"  @change="sortUsers" />
     </label>
   </div>
 </template>
@@ -78,6 +85,7 @@ const sortUsers = (e) =>{
   font-size: 14px;
   width: 200px;
 }
+
 .cancel{
     background-color: #fff;
     position: absolute;
