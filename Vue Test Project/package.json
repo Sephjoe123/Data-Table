@@ -16,5 +16,15 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
     "vite": "^5.4.10"
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "main": "index.js",
+  "license": "MIT"
 }
